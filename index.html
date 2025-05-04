@@ -400,22 +400,13 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             /* Navigation for Mobile */
-            nav ul {
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-                margin-top: 1rem;
-                padding: 0.5rem 0;
-                background: transparent;
-                position: static;
-                width: 100%;
+            nav {
+                display: none;
             }
-            nav li {
-                margin: 0.3rem 0.8rem;
-            }
-            nav a {
-                font-size: 1rem;
-                padding: 0.5rem;
+
+            /* Header Adjustments */
+            header {
+                padding: 1rem;
             }
 
             /* Hero Section */
@@ -503,20 +494,6 @@
         }
 
         @media (max-width: 480px) {
-            /* Navigation for Smaller Mobile */
-            nav ul {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            nav li {
-                margin: 0.2rem 0.5rem;
-            }
-            nav a {
-                font-size: 0.9rem;
-                padding: 0.4rem;
-            }
-
             /* Hero Section */
             .hero {
                 min-height: 30vh;
