@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -111,7 +72,7 @@
             font-size: 1.1rem;
             color: #e0e0e0;
             position: relative;
-            padding-bottom: 6px;
+            padding: 0.5rem 0;
             font-weight: 500;
         }
         nav a::after {
@@ -129,6 +90,25 @@
         }
         nav a:hover {
             color: #7b2cbf;
+        }
+
+        /* Hamburger Menu for Mobile */
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: #e0e0e0;
+            cursor: pointer;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+        }
+        nav {
+            position: relative;
+        }
+        nav ul.active {
+            display: flex;
         }
 
         /* Hero Section */
@@ -174,11 +154,11 @@
         }
         .btn {
             display: inline-block;
-            padding: 0.6rem 1.5rem;
+            padding: 0.8rem 2rem;
             background: #7b2cbf;
             color: white;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             box-shadow: 0 6px 20px rgba(123, 44, 191, 0.5);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -243,6 +223,7 @@
             pointer-events: auto;
             position: relative;
             z-index: 1;
+            padding: 0.5rem 1rem;
         }
         .card a:hover {
             color: #7b2cbf;
@@ -284,6 +265,7 @@
             color: #00b7ff;
             margin-top: 1rem;
             display: inline-block;
+            padding: 0.5rem 1rem;
         }
 
         /* FAQs */
@@ -327,7 +309,7 @@
             max-width: 700px;
             margin: 0 auto;
             background: #1c1c1c;
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 20px;
             box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
         }
@@ -398,6 +380,7 @@
             font-size: 1.5rem;
             color: #e0e0e0;
             transition: color 0.3s ease, transform 0.3s ease;
+            padding: 0.5rem;
         }
         footer a:hover {
             color: #7b2cbf;
@@ -435,44 +418,164 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-            .hero p {
-                font-size: 0.9rem;
+            /* Navigation for Mobile */
+            .hamburger {
+                display: block;
             }
             nav ul {
+                display: none;
                 flex-direction: column;
                 align-items: center;
+                margin-top: 0;
+                padding: 1rem 0;
+                background: rgba(10, 10, 10, 0.95);
+                position: absolute;
+                top: 4rem;
+                left: 0;
+                width: 100%;
             }
             nav li {
                 margin: 0.75rem 0;
             }
-            .resource-cards, .tool-cards, .blog-posts {
-                grid-template-columns: 1fr;
+            nav a {
+                font-size: 1.2rem;
+                padding: 0.75rem;
             }
+
+            /* Hero Section */
             .hero {
                 min-height: 35vh;
                 padding: 1.5rem 1rem;
             }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+            .btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            /* General Section Adjustments */
             section {
-                padding: 4rem 1.5rem;
+                padding: 3rem 1rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            p {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            /* Cards */
+            .resource-cards, .tool-cards, .blog-posts {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .card h3 {
+                font-size: 1.4rem;
+            }
+            .card p {
+                font-size: 1rem;
+            }
+            .card a {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+
+            /* Form */
+            form {
+                padding: 1.5rem;
+            }
+            label {
+                font-size: 1.1rem;
+            }
+            input, textarea {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+            button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+
+            /* Footer */
+            footer {
+                padding: 3rem 1rem;
+            }
+            footer p {
+                font-size: 1rem;
+            }
+            footer a {
+                font-size: 1.3rem;
+            }
+
+            /* Back to Top Button */
+            #back-to-top {
+                bottom: 2rem;
+                right: 2rem;
+                padding: 0.8rem;
+                font-size: 1rem;
             }
         }
+
         @media (max-width: 480px) {
+            /* Hero Section */
+            .hero {
+                min-height: 30vh;
+                padding: 1rem 0.8rem;
+            }
             .hero h2 {
                 font-size: 1.5rem;
             }
             .hero p {
-                font-size: 0.8rem;
-            }
-            .btn {
-                padding: 0.5rem 1.2rem;
                 font-size: 0.9rem;
             }
-            .hero {
-                min-height: 30vh;
-                padding: 1rem 0.8rem;
+            .btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            /* General Section Adjustments */
+            section {
+                padding: 2rem 0.8rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            p {
+                font-size: 0.9rem;
+            }
+
+            /* Cards */
+            .card h3 {
+                font-size: 1.3rem;
+            }
+            .card p {
+                font-size: 0.9rem;
+            }
+            .card a {
+                font-size: 0.9rem;
+            }
+
+            /* Form */
+            label {
+                font-size: 1rem;
+            }
+            input, textarea {
+                font-size: 0.9rem;
+                padding: 0.7rem;
+            }
+            button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
             }
         }
     </style>
@@ -481,6 +584,7 @@
     <header>
         <h1>BugBounty.info</h1>
         <nav>
+            <button class="hamburger" aria-label="Toggle menu">☰</button>
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -654,6 +758,15 @@
         });
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Hamburger Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('nav ul');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            hamburger.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
         });
     </script>
 </body>
