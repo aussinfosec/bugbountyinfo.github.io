@@ -92,22 +92,6 @@
             color: #7b2cbf;
         }
 
-        /* Hamburger Menu for Mobile */
-        .hamburger {
-            display: none;
-            font-size: 2rem;
-            background: none;
-            border: none;
-            color: #e0e0e0;
-            cursor: pointer;
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-        }
-        nav {
-            position: relative;
-        }
-
         /* Hero Section */
         .hero {
             position: relative;
@@ -416,31 +400,22 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             /* Navigation for Mobile */
-            .hamburger {
-                display: block;
-            }
             nav ul {
-                display: none;
-                flex-direction: column;
+                flex-direction: row;
+                justify-content: center;
                 align-items: center;
-                margin-top: 0;
-                padding: 1rem 0;
-                background: rgba(10, 10, 10, 0.95);
-                position: absolute;
-                top: 4rem;
-                left: 0;
+                margin-top: 1rem;
+                padding: 0.5rem 0;
+                background: transparent;
+                position: static;
                 width: 100%;
-                border-top: 1px solid rgba(123, 44, 191, 0.2);
-            }
-            nav ul.active {
-                display: flex;
             }
             nav li {
-                margin: 0.5rem 0;
+                margin: 0.3rem 0.8rem;
             }
             nav a {
-                font-size: 1.2rem;
-                padding: 0.75rem 1rem;
+                font-size: 1rem;
+                padding: 0.5rem;
             }
 
             /* Hero Section */
@@ -528,6 +503,20 @@
         }
 
         @media (max-width: 480px) {
+            /* Navigation for Smaller Mobile */
+            nav ul {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            nav li {
+                margin: 0.2rem 0.5rem;
+            }
+            nav a {
+                font-size: 0.9rem;
+                padding: 0.4rem;
+            }
+
             /* Hero Section */
             .hero {
                 min-height: 30vh;
@@ -585,7 +574,6 @@
     <header>
         <h1>BugBounty.info</h1>
         <nav>
-            <button class="hamburger" aria-label="Toggle menu">☰</button>
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -759,15 +747,6 @@
         });
         backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Hamburger Menu Toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('nav ul');
-
-        hamburger.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            hamburger.textContent = navMenu.classList.contains('active') ? '✕' : '☰';
         });
     </script>
 </body>
