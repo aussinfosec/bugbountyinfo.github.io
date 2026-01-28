@@ -3,727 +3,1772 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BugBounty.info — Your Gateway to Ethical Hacking</title>
     <meta name="description" content="Your ultimate resource for bug bounties: learn, hunt, and secure the web with expert guides, tools, and community insights.">
-    <meta name="keywords" content="bug bounty, ethical hacking, cybersecurity, vulnerabilities, hacking tools">
-    <title>BugBounty.info - Your Gateway to Ethical Hacking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
+        :root {
+            --bg-dark: #0b0d0f;
+            --bg-card: #111318;
+            --bg-card-hover: #161920;
+            --accent: #22d3ee;
+            --accent-glow: rgba(34, 211, 238, 0.15);
+            --accent-secondary: #a78bfa;
+            --accent-green: #4ade80;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --border: #1e2530;
+            --border-hover: #2d3a4a;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            line-height: 1.7;
+
+        html {
             scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-        a {
-            color: #00b7ff;
-            text-decoration: none;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-        a:hover {
-            color: #7b2cbf;
-        }
-        h1, h2, h3 {
-            font-family: 'Poppins', sans-serif;
-            color: #ffffff;
-        }
-        section {
-            padding: 6rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
         }
 
-        /* Header */
-        header {
-            position: sticky;
-            top: 0;
-            background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            padding: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        body {
+            font-family: 'Space Grotesk', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
-        header h1 {
-            text-align: center;
-            font-size: 2.2rem;
-            background: linear-gradient(45deg, #00b7ff, #7b2cbf);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+
+        /* Ambient background */
+        .ambient {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-        nav li {
-            margin: 0 1.5rem;
-        }
-        nav a {
-            font-size: 1.1rem;
-            color: #e0e0e0;
-            position: relative;
-            padding: 0.5rem 0;
-            font-weight: 500;
-        }
-        nav a::after {
+
+        .ambient::before {
             content: '';
             position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(167, 139, 250, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(74, 222, 128, 0.04) 0%, transparent 60%);
+            animation: ambientShift 30s ease-in-out infinite;
+        }
+
+        @keyframes ambientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(34, 211, 238, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Main content wrapper */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(20px);
+            background: rgba(11, 13, 15, 0.8);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.75rem 2rem;
+            background: rgba(11, 13, 15, 0.95);
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bg-dark);
+        }
+
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-text span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
             width: 0;
             height: 2px;
-            bottom: 0;
-            left: 0;
-            background: #7b2cbf;
+            background: var(--accent);
             transition: width 0.3s ease;
         }
-        nav a:hover::after {
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a:hover::after {
             width: 100%;
         }
-        nav a:hover {
-            color: #7b2cbf;
+
+        .nav-cta {
+            padding: 0.6rem 1.5rem;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.5rem;
         }
 
         /* Hero Section */
         .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
             position: relative;
-            min-height: 40vh;
+        }
+
+        .hero-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 50%, var(--accent-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+        }
+
+        /* Terminal animation in hero */
+        .hero-visual {
+            position: relative;
+        }
+
+        .terminal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 1px rgba(255,255,255,0.03),
+                0 20px 70px -20px rgba(0,0,0,0.5),
+                0 0 100px var(--accent-glow);
+            animation: terminalFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes terminalFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+
+        .terminal-header {
+            padding: 1rem 1.25rem;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            min-height: 320px;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: typeLine 0.5s ease forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.2s; }
+        .terminal-line:nth-child(2) { animation-delay: 0.8s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.4s; }
+        .terminal-line:nth-child(4) { animation-delay: 2s; }
+        .terminal-line:nth-child(5) { animation-delay: 2.6s; }
+        .terminal-line:nth-child(6) { animation-delay: 3.2s; }
+        .terminal-line:nth-child(7) { animation-delay: 3.8s; }
+        .terminal-line:nth-child(8) { animation-delay: 4.4s; }
+
+        @keyframes typeLine {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .terminal-prompt {
+            color: var(--accent);
+        }
+
+        .terminal-command {
+            color: var(--text);
+        }
+
+        .terminal-output {
+            color: var(--text-muted);
+            padding-left: 1.5rem;
+        }
+
+        .terminal-success {
+            color: var(--accent-green);
+        }
+
+        .terminal-warning {
+            color: var(--accent-orange);
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Section styles */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* What is Bug Bounty section */
+        .what-is {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 50%, var(--bg-dark) 100%);
+        }
+
+        .what-is-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .what-is-content h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .what-is-content p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(34, 211, 238, 0.1);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            background: linear-gradient(45deg, #00b7ff, #7b2cbf, #00b7ff);
-            background-size: 300% 300%;
-            animation: gradientShift 15s ease infinite;
-            overflow: hidden;
-            padding: 2rem 1.5rem;
-        }
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 2%, transparent 2%);
-            background-size: 25px 25px;
-            opacity: 0.4;
-            z-index: 1;
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-        }
-        .hero h2 {
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .hero p {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: #f0f0f0;
-        }
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background: #7b2cbf;
-            color: white;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            box-shadow: 0 6px 20px rgba(123, 44, 191, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(123, 44, 191, 0.7);
+            flex-shrink: 0;
+            font-size: 1.25rem;
         }
 
-        /* Cards */
-        .resource-cards, .tool-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
+        .feature-text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
         }
-        .card {
-            background: #1c1c1c;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(123, 44, 191, 0.2);
-        }
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(123, 44, 191, 0.3));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-        .card:hover::before {
-            opacity: 1;
-        }
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-        }
-        .card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 1rem;
-        }
-        .card p {
-            color: #b0b0b0;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-        .card a {
-            display: inline-block;
-            margin-top: 1.5rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #00b7ff;
-            cursor: pointer;
-            pointer-events: auto;
-            position: relative;
-            z-index: 1;
-            padding: 0.5rem 1rem;
-        }
-        .card a:hover {
-            color: #7b2cbf;
-            transform: scale(1.05);
-        }
-        .card .coming-soon {
+
+        .feature-text p {
+            color: var(--text-muted);
             font-size: 0.9rem;
-            color: #888;
-            margin-top: 0.5rem;
+            margin: 0;
         }
 
-        /* Blog Section */
-        .blog-posts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+        .what-is-visual {
+            position: relative;
         }
-        .blog-post {
-            background: #1c1c1c;
-            border-radius: 15px;
-            padding: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        .blog-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--accent-pink));
         }
-        .blog-post h3 {
-            font-size: 1.4rem;
+
+        .info-card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
         }
-        .blog-post p {
-            color: #b0b0b0;
+
+        .info-card p {
+            color: var(--text-muted);
             font-size: 1rem;
-        }
-        .blog-post a {
-            font-weight: 600;
-            color: #00b7ff;
-            margin-top: 1rem;
-            display: inline-block;
-            padding: 0.5rem 1rem;
+            line-height: 1.8;
         }
 
-        /* FAQs */
-        details {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: #1c1c1c;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: background 0.3s ease;
-        }
-        details:hover {
-            background: #252525;
-        }
-        summary {
-            cursor: pointer;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        summary::after {
-            content: '➕';
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-        details[open] summary::after {
-            content: '➖';
-            transform: rotate(90deg);
-        }
-        details p {
-            margin-top: 1.5rem;
-            color: #b0b0b0;
-            font-size: 1.1rem;
+        /* Getting Started Path */
+        .path-section {
+            background: var(--bg-dark);
         }
 
-        /* Contact Form */
-        form {
-            max-width: 700px;
+        .path-grid {
+            max-width: 1200px;
             margin: 0 auto;
-            background: #1c1c1c;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            position: relative;
         }
-        label {
-            font-size: 1.2rem;
-            margin-top: 1.5rem;
-            color: #e0e0e0;
+
+        .path-grid::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--accent-pink), var(--accent-green));
+            z-index: 0;
+        }
+
+        .path-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .path-step:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 50px -20px var(--accent-glow);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--bg-dark);
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .path-step:nth-child(2) .step-number {
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-pink));
+        }
+
+        .path-step:nth-child(3) .step-number {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
+        }
+
+        .path-step:nth-child(4) .step-number {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-green));
+        }
+
+        .path-step h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .path-step p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Platforms Section */
+        .platforms-section {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+        }
+
+        .platforms-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .platform-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
             display: block;
         }
-        input, textarea {
-            width: 100%;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            border-radius: 8px;
-            color: #e0e0e0;
-            font-size: 1.1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-hover);
+            background: var(--bg-card-hover);
         }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #7b2cbf;
-            box-shadow: 0 0 10px rgba(123, 44, 191, 0.5);
+
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
-        textarea {
-            resize: vertical;
-            min-height: 150px;
+
+        .platform-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
         }
-        button {
-            margin-top: 2rem;
-            padding: 1.2rem 3rem;
-            background: #7b2cbf;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
+
+        .platform-card:nth-child(1) .platform-logo { background: linear-gradient(135deg, #9945FF, #14F195); }
+        .platform-card:nth-child(2) .platform-logo { background: linear-gradient(135deg, #F04E23, #FF6B35); }
+        .platform-card:nth-child(3) .platform-logo { background: linear-gradient(135deg, #7928CA, #FF0080); }
+        .platform-card:nth-child(4) .platform-logo { background: linear-gradient(135deg, #00D4FF, #0099FF); }
+        .platform-card:nth-child(5) .platform-logo { background: linear-gradient(135deg, #FFD700, #FFA500); }
+        .platform-card:nth-child(6) .platform-logo { background: linear-gradient(135deg, #00C853, #00E676); }
+
+        .platform-name {
             font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.15rem;
         }
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 183, 255, 0.5);
+
+        .platform-type {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .platform-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .platform-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .platform-tag {
+            padding: 0.35rem 0.75rem;
+            background: rgba(34, 211, 238, 0.1);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+
+        /* Resources Section */
+        .resources-section {
+            background: var(--bg-card);
+        }
+
+        .resources-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .resource-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            border-color: var(--border-hover);
+            transform: translateX(5px);
+        }
+
+        .resource-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(34, 211, 238, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .resource-card:nth-child(1) .resource-icon { background: rgba(34, 211, 238, 0.1); }
+        .resource-card:nth-child(2) .resource-icon { background: rgba(167, 139, 250, 0.1); }
+        .resource-card:nth-child(3) .resource-icon { background: rgba(244, 114, 182, 0.1); }
+        .resource-card:nth-child(4) .resource-icon { background: rgba(74, 222, 128, 0.1); }
+
+        .resource-content h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-content p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .resource-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.2s ease;
+        }
+
+        .resource-link:hover {
+            gap: 0.75rem;
+        }
+
+        /* Vulnerability Types */
+        .vulns-section {
+            background: var(--bg-dark);
+        }
+
+        .vulns-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .vuln-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .vuln-card:hover {
+            border-color: var(--accent);
+            transform: scale(1.02);
+        }
+
+        .vuln-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .vuln-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .vuln-severity {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .vuln-severity.critical { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .vuln-severity.high { background: rgba(251, 146, 60, 0.2); color: #fb923c; }
+        .vuln-severity.medium { background: rgba(250, 204, 21, 0.2); color: #facc15; }
+
+        /* Tips Section */
+        .tips-section {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 50%, var(--bg-dark) 100%);
+        }
+
+        .tips-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .tip-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .tip-item:hover {
+            border-color: var(--border-hover);
+        }
+
+        .tip-number {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-dark);
+            flex-shrink: 0;
+        }
+
+        .tip-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tip-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Newsletter CTA */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 4rem;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), var(--accent-pink));
+        }
+
+        .cta-container h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-container p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .cta-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .cta-input:focus {
+            border-color: var(--accent);
+        }
+
+        .cta-input::placeholder {
+            color: var(--text-dim);
         }
 
         /* Footer */
         footer {
-            background: #1c1c1c;
-            padding: 4rem 2rem;
-            text-align: center;
-            border-top: 1px solid rgba(123, 44, 191, 0.2);
+            padding: 4rem 2rem 2rem;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border);
         }
-        footer p {
-            font-size: 1.1rem;
-            color: #b0b0b0;
-            margin-bottom: 2rem;
+
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        footer ul {
-            display: flex;
-            justify-content: center;
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            max-width: 300px;
+        }
+
+        .footer-column h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .footer-column ul {
             list-style: none;
         }
-        footer li {
-            margin: 0 1.5rem;
-        }
-        footer a {
-            font-size: 1.5rem;
-            color: #e0e0e0;
-            transition: color 0.3s ease, transform 0.3s ease;
-            padding: 0.5rem;
-        }
-        footer a:hover {
-            color: #7b2cbf;
-            transform: scale(1.3);
+
+        .footer-column li {
+            margin-bottom: 0.75rem;
         }
 
-        /* Back to Top Button */
-        #back-to-top {
-            position: fixed;
-            bottom: 3rem;
-            right: 3rem;
-            background: #7b2cbf;
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(123, 44, 191, 0.5);
-            display: none;
-            font-size: 1.2rem;
-            transition: background 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-        }
-        #back-to-top:hover {
-            background: #00b7ff;
-            transform: translateY(-5px);
-            opacity: 0.9;
+        .footer-column a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
         }
 
-        /* Animations */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .footer-column a:hover {
+            color: var(--accent);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            /* Navigation for Mobile */
-            nav {
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+        }
+
+        .footer-bottom p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .footer-socials a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content {
+                max-width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .stats-inner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .what-is-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .path-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .path-grid::before {
                 display: none;
             }
 
-            /* Header Adjustments */
-            header {
-                padding: 1rem;
+            .platforms-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            /* Hero Section */
-            .hero {
-                min-height: 35vh;
-                padding: 1.5rem 1rem;
-            }
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-            .hero p {
-                font-size: 1rem;
-                line-height: 1.5;
-            }
-            .btn {
-                padding: 0.7rem 1.5rem;
-                font-size: 1rem;
+            .vulns-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
 
-            /* General Section Adjustments */
-            section {
-                padding: 3rem 1rem;
-            }
-            h2 {
-                font-size: 1.8rem;
-            }
-            p {
-                font-size: 1rem;
-                line-height: 1.6;
-            }
-
-            /* Cards */
-            .resource-cards, .tool-cards, .blog-posts {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            .card {
-                padding: 1.5rem;
-            }
-            .card h3 {
-                font-size: 1.4rem;
-            }
-            .card p {
-                font-size: 1rem;
-            }
-            .card a {
-                font-size: 1rem;
-                padding: 0.5rem 1rem;
-            }
-
-            /* Form */
-            form {
-                padding: 1.5rem;
-            }
-            label {
-                font-size: 1.1rem;
-            }
-            input, textarea {
-                font-size: 1rem;
-                padding: 0.8rem;
-            }
-            button {
-                padding: 1rem 2rem;
-                font-size: 1.1rem;
-            }
-
-            /* Footer */
-            footer {
-                padding: 3rem 1rem;
-            }
-            footer p {
-                font-size: 1rem;
-            }
-            footer a {
-                font-size: 1.3rem;
-            }
-
-            /* Back to Top Button */
-            #back-to-top {
-                bottom: 2rem;
-                right: 2rem;
-                padding: 0.8rem;
-                font-size: 1rem;
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
             }
         }
 
-        @media (max-width: 480px) {
-            /* Hero Section */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
             .hero {
-                min-height: 30vh;
-                padding: 1rem 0.8rem;
-            }
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-            .hero p {
-                font-size: 0.9rem;
-            }
-            .btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
+                padding: 7rem 1.5rem 3rem;
             }
 
-            /* General Section Adjustments */
-            section {
-                padding: 2rem 0.8rem;
-            }
-            h2 {
-                font-size: 1.6rem;
-            }
-            p {
-                font-size: 0.9rem;
+            .stats-inner {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
-            /* Cards */
-            .card h3 {
-                font-size: 1.3rem;
-            }
-            .card p {
-                font-size: 0.9rem;
-            }
-            .card a {
-                font-size: 0.9rem;
+            .path-grid,
+            .platforms-grid,
+            .vulns-grid {
+                grid-template-columns: 1fr;
             }
 
-            /* Form */
-            label {
-                font-size: 1rem;
+            .resources-grid {
+                grid-template-columns: 1fr;
             }
-            input, textarea {
-                font-size: 0.9rem;
-                padding: 0.7rem;
+
+            .cta-form {
+                flex-direction: column;
             }
-            button {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>BugBounty.info</h1>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#resources">Resources</a></li>
-                <li><a href="#tools">Tools</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#faqs">FAQs</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
+    <div class="ambient"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="wrapper">
+        <!-- Navigation -->
+        <nav id="nav">
+            <div class="nav-inner">
+                <a href="#" class="logo">
+                    <div class="logo-icon">BB</div>
+                    <span class="logo-text">BugBounty<span>.info</span></span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#what-is">What is Bug Bounty?</a></li>
+                    <li><a href="#get-started">Get Started</a></li>
+                    <li><a href="#platforms">Platforms</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                </ul>
+                <a href="#get-started" class="nav-cta">Start Learning</a>
+                <button class="mobile-menu-btn" aria-label="Menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+            </div>
         </nav>
-    </header>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h2>Discover the Art of Bug Bounties</h2>
-            <p>Join the global community of ethical hackers. Learn to find vulnerabilities, earn rewards, and make the internet safer.</p>
-            <a href="#resources" class="btn">Start Hunting</a>
-        </div>
-    </section>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="hero-content">
+                    <div class="hero-badge">Your Gateway to Ethical Hacking</div>
+                    <h1>Learn to <span class="gradient">Hunt Bugs</span> and Secure the Web</h1>
+                    <p class="hero-description">Your ultimate resource for bug bounties: learn the fundamentals, discover platforms, and start your journey as an ethical hacker with expert guides and community insights.</p>
+                    <div class="hero-buttons">
+                        <a href="#get-started" class="btn btn-primary">
+                            <span>Start Your Journey</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                        <a href="#what-is" class="btn btn-secondary">
+                            <span>Learn the Basics</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                            <span class="terminal-title">researcher@bugbounty ~ </span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command">./start_hunting.sh</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output">[*] Initializing recon tools...</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output terminal-success">[✓] Subdomain enumeration complete</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output terminal-success">[✓] Port scanning finished</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output">[*] Analyzing endpoints...</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output terminal-warning">[!] Potential XSS found: /search?q=</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-output terminal-success">[✓] Vulnerability confirmed!</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="terminal-prompt">$</span>
+                                <span class="terminal-command" style="border-right: 2px solid var(--accent); animation: blink 1s infinite;">_</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section id="about">
-        <h2>About Bug Bounties</h2>
-        <p>Bug bounties are initiatives where organizations invite ethical hackers to identify and report security vulnerabilities in their systems, offering financial rewards or recognition in return. These programs bridge the gap between companies seeking robust security and skilled individuals passionate about cybersecurity.</p>
-        <p><strong>History:</strong> The concept began with Netscape's 1995 bug bounty program and has since evolved into a multi-billion-dollar industry, with tech giants like Google, Microsoft, and Facebook running prominent programs.</p>
-        <p><strong>Why It Matters:</strong> Bug bounties enhance security by crowdsourcing expertise, provide hackers with legitimate income opportunities, and foster a culture of responsible disclosure. Whether you're a beginner or a seasoned pro, bug bounties offer a path to impact and success.</p>
-    </section>
-
-    <section id="resources">
-        <h2>Resources for Bug Bounty Hunters</h2>
-        <p>Explore our curated collection of resources to kickstart or advance your bug bounty journey. From learning platforms to active bounty programs, we’ve got you covered.</p>
-        <div class="resource-cards">
-            <div class="card">
-                <h3>OWASP Top Ten</h3>
-                <p>A comprehensive guide to the most critical web application security risks, perfect for understanding common vulnerabilities like XSS and SQL Injection.</p>
-                <a href="https://owasp.org/Top10/" target="_blank" rel="noopener noreferrer">Explore Now</a>
-            </div>
-            <div class="card">
-                <h3>Web Security Academy</h3>
-                <p>Free, hands-on training from PortSwigger, covering everything from basic vulnerabilities to advanced exploitation techniques.</p>
-                <a href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">Start Learning</a>
-            </div>
-            <div class="card">
-                <h3>HackerOne</h3>
-                <p>A leading platform connecting ethical hackers with companies, offering access to diverse bounty programs and community support.</p>
-                <a href="https://www.hackerone.com/" target="_blank" rel="noopener noreferrer">Join HackerOne</a>
-            </div>
-            <div class="card">
-                <h3>Bugcrowd</h3>
-                <p>Another top-tier platform with a wide range of public and private bounty programs, ideal for hunters at all levels.</p>
-                <a href="https://www.bugcrowd.com/" target="_blank" rel="noopener noreferrer">Join Bugcrowd</a>
-            </div>
-            <div class="card">
-                <h3>TryHackMe</h3>
-                <p>An interactive platform with beginner-friendly labs and challenges to build your hacking skills in a safe environment.</p>
-                <a href="https://tryhackme.com/" target="_blank" rel="noopener noreferrer">Practice Now</a>
-            </div>
-            <div class="card">
-                <h3>Premium Bug Bounty Course</h3>
-                <p>Our exclusive course, "Master Bug Hunting," with in-depth tutorials and live Q&A sessions, is coming soon. Stay tuned!</p>
-                <p class="coming-soon">Coming Soon</p>
-            </div>
-            <div class="card">
-                <h3>Launch Your Own Bug Bounty Program</h3>
-                <p>A comprehensive course for organizations and individuals looking to start their own bug bounty program. Learn the best practices, legal considerations, and how to attract top talent.</p>
-                <p class="coming-soon">Coming Soon</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="tools">
-        <h2>Essential Bug Bounty Tools</h2>
-        <p>Equip yourself with the best tools for vulnerability hunting. Below are must-have tools for scanning, testing, and reporting bugs effectively.</p>
-        <div class="tool-cards">
-            <div class="card">
-                <h3>Burp Suite</h3>
-                <p>A powerful toolkit for web application testing, featuring intercepting proxies, scanners, and advanced manual testing tools.</p>
-                <a href="https://portswigger.net/burp" target="_blank" rel="noopener noreferrer">Get Burp Suite</a>
-            </div>
-            <div class="card">
-                <h3>Nmap</h3>
-                <p>A versatile network scanner for discovering hosts, services, and open ports, essential for reconnaissance.</p>
-                <a href="https://nmap.org/" target="_blank" rel="noopener noreferrer">Download Nmap</a>
-            </div>
-            <div class="card">
-                <h3>OWASP ZAP</h3>
-                <p>An open-source security scanner for finding vulnerabilities in web applications, ideal for automated testing.</p>
-                <a href="https://www.zaproxy.org/" target="_blank" rel="noopener noreferrer">Get OWASP ZAP</a>
-            </div>
-            <div class="card">
-                <h3>FFUF</h3>
-                <p>A fast web fuzzer for discovering hidden directories, files, and parameters on web servers, perfect for enumeration in bug bounty hunting.</p>
-                <a href="https://github.com/ffuf/ffuf" target="_blank" rel="noopener noreferrer">Learn More</a>
-            </div>
-            <div class="card">
-                <h3>ProjectDiscovery Tools</h3>
-                <p>A suite of open-source tools like Nuclei (vulnerability scanning) and Subfinder (subdomain enumeration), designed for efficient bug bounty workflows.</p>
-                <a href="https://projectdiscovery.io/" target="_blank" rel="noopener noreferrer">Explore ProjectDiscovery</a>
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stats-inner">
+                <div class="stat-item">
+                    <div class="stat-value">$100M+</div>
+                    <div class="stat-label">Paid to researchers yearly</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">500K+</div>
+                    <div class="stat-label">Active bug hunters globally</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2,000+</div>
+                    <div class="stat-label">Active bounty programs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">Free</div>
+                    <div class="stat-label">To start learning today</div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <section id="blog">
-        <h2>Blog: Insights & Tips</h2>
-        <p>Stay updated with the latest bug bounty strategies, success stories, and expert advice from the cybersecurity community. Full blog posts coming soon!</p>
-        <div class="blog-posts">
-            <div class="blog-post">
-                <h3>How to Find Your First Bug: A Beginner’s Guide</h3>
-                <p>Learn the step-by-step process to start bug hunting, from setting up your environment to submitting your first report. Perfect for newcomers!</p>
-                <a href="https://portswigger.net/web-security/getting-started" target="_blank" rel="noopener noreferrer">Read More</a>
+        <!-- What is Bug Bounty Section -->
+        <section class="what-is" id="what-is">
+            <div class="what-is-grid">
+                <div class="what-is-content">
+                    <span class="section-label">// Understanding Bug Bounties</span>
+                    <h3>What is a Bug Bounty Program?</h3>
+                    <p>A bug bounty program is a deal offered by companies and organizations that rewards individuals for discovering and reporting software bugs, especially security vulnerabilities.</p>
+                    <p>Companies like Google, Microsoft, and Facebook pay researchers millions of dollars each year for finding security flaws before malicious hackers can exploit them.</p>
+                    <ul class="feature-list">
+                        <li>
+                            <div class="feature-icon">💰</div>
+                            <div class="feature-text">
+                                <h4>Earn Real Money</h4>
+                                <p>Top researchers earn six figures annually. Bounties range from $50 to $1,000,000+</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🎓</div>
+                            <div class="feature-text">
+                                <h4>Learn Valuable Skills</h4>
+                                <p>Develop in-demand cybersecurity expertise that opens career opportunities</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🌍</div>
+                            <div class="feature-text">
+                                <h4>Work From Anywhere</h4>
+                                <p>Hunt bugs on your own schedule from anywhere in the world</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-text">
+                                <h4>Make the Internet Safer</h4>
+                                <p>Your findings protect millions of users from potential security threats</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="what-is-visual">
+                    <div class="info-card">
+                        <div class="info-card-icon">🔐</div>
+                        <h3>Ethical Hacking, Legal Rewards</h3>
+                        <p>Bug bounty programs provide a legal framework for security researchers to test systems and get rewarded. Unlike malicious hacking, you're working with companies to improve their security—and getting paid for it.</p>
+                        <p style="margin-top: 1rem;">All you need to get started is curiosity, dedication to learning, and a computer with an internet connection.</p>
+                    </div>
+                </div>
             </div>
-            <div class="blog-post">
-                <h3>Top 10 Vulnerabilities to Hunt in 2025</h3>
-                <p>Explore the most common and high-impact vulnerabilities, including XSS, CSRF, and IDOR, with tips to find them efficiently.</p>
-                <a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">Read More</a>
+        </section>
+
+        <!-- Getting Started Path -->
+        <section class="path-section" id="get-started">
+            <div class="section-header">
+                <span class="section-label">// Your Learning Path</span>
+                <h2 class="section-title">How to Get Started</h2>
+                <p class="section-description">Follow this proven path to go from complete beginner to submitting your first bug report</p>
             </div>
-        </div>
-    </section>
+            <div class="path-grid">
+                <div class="path-step">
+                    <div class="step-number">1</div>
+                    <h3>Learn the Fundamentals</h3>
+                    <p>Start with web technologies: HTML, CSS, JavaScript, HTTP, and how browsers work. Understanding the basics is essential.</p>
+                </div>
+                <div class="path-step">
+                    <div class="step-number">2</div>
+                    <h3>Study Vulnerabilities</h3>
+                    <p>Learn about common vulnerabilities like XSS, SQL Injection, CSRF, and IDOR. Practice on intentionally vulnerable apps.</p>
+                </div>
+                <div class="path-step">
+                    <div class="step-number">3</div>
+                    <h3>Set Up Your Tools</h3>
+                    <p>Install essential tools: Burp Suite for intercepting traffic, browser dev tools, and reconnaissance tools.</p>
+                </div>
+                <div class="path-step">
+                    <div class="step-number">4</div>
+                    <h3>Start Hunting</h3>
+                    <p>Join a platform, pick a program with a wide scope, and start testing. Focus on learning, not just earning.</p>
+                </div>
+            </div>
+        </section>
 
-    <section id="faqs">
-        <h2>Frequently Asked Questions</h2>
-        <details>
-            <summary>What is a bug bounty program?</summary>
-            <p>A bug bounty program is an initiative where companies reward ethical hackers for discovering and responsibly reporting security vulnerabilities in their systems, helping improve cybersecurity.</p>
-        </details>
-        <details>
-            <summary>Do I need to be an expert to start bug hunting?</summary>
-            <p>No! Beginners can start with basic knowledge of web technologies and security concepts. Platforms like TryHackMe and Web Security Academy offer free training to build your skills.</p>
-        </details>
-        <details>
-            <summary>Is bug hunting legal?</summary>
-            <p>Yes, as long as you follow the rules of the bounty program and obtain permission to test systems. Always adhere to ethical hacking guidelines and avoid unauthorized access.</p>
-        </details>
-        <details>
-            <summary>How much can I earn from bug bounties?</summary>
-            <p>Earnings vary widely, from $50 for low-severity bugs to over $100,000 for critical vulnerabilities in major programs. Your skills, persistence, and choice of programs influence your income.</p>
-        </details>
-        <details>
-            <summary>How do I write a good bug report?</summary>
-            <p>A good bug report includes a clear description of the vulnerability, steps to reproduce it, its potential impact, and suggested fixes. Be concise, professional, and include screenshots or videos if possible.</p>
-        </details>
-    </section>
+        <!-- Platforms Section -->
+        <section class="platforms-section" id="platforms">
+            <div class="section-header">
+                <span class="section-label">// Where to Hunt</span>
+                <h2 class="section-title">Bug Bounty Platforms</h2>
+                <p class="section-description">Join these platforms to access hundreds of programs and start earning rewards</p>
+            </div>
+            <div class="platforms-grid">
+                <a href="https://hackerone.com" target="_blank" class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo">H1</div>
+                        <div>
+                            <div class="platform-name">HackerOne</div>
+                            <div class="platform-type">Industry Leader</div>
+                        </div>
+                    </div>
+                    <p class="platform-description">The world's largest hacker-powered security platform with programs from top companies including the US Department of Defense.</p>
+                    <div class="platform-tags">
+                        <span class="platform-tag">Beginner Friendly</span>
+                        <span class="platform-tag">High Payouts</span>
+                    </div>
+                </a>
+                <a href="https://bugcrowd.com" target="_blank" class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo">BC</div>
+                        <div>
+                            <div class="platform-name">Bugcrowd</div>
+                            <div class="platform-type">Crowdsourced Security</div>
+                        </div>
+                    </div>
+                    <p class="platform-description">Pioneer in crowdsourced security testing with a vast program catalog and excellent researcher resources.</p>
+                    <div class="platform-tags">
+                        <span class="platform-tag">Great Community</span>
+                        <span class="platform-tag">Training Resources</span>
+                    </div>
+                </a>
+                <a href="https://intigriti.com" target="_blank" class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo">IN</div>
+                        <div>
+                            <div class="platform-name">Intigriti</div>
+                            <div class="platform-type">European Platform</div>
+                        </div>
+                    </div>
+                    <p class="platform-description">Europe's leading ethical hacking platform with strong researcher support and competitive bounties.</p>
+                    <div class="platform-tags">
+                        <span class="platform-tag">EU Programs</span>
+                        <span class="platform-tag">Fast Payouts</span>
+                    </div>
+                </a>
+                <a href="https://yeswehack.com" target="_blank" class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo">YW</div>
+                        <div>
+                            <div class="platform-name">YesWeHack</div>
+                            <div class="platform-type">Global Platform</div>
+                        </div>
+                    </div>
+                    <p class="platform-description">Global bug bounty platform with a growing list of programs and strong focus on researcher education.</p>
+                    <div class="platform-tags">
+                        <span class="platform-tag">DOJO Training</span>
+                        <span class="platform-tag">Global Reach</span>
+                    </div>
+                </a>
+                <a href="https://www.synack.com" target="_blank" class="platform-card">
+                    <div class="platform-header">
+                        <div class="platform-logo">SY</div>
+                        <div>
+                            <div class="platform-name">Synack</div>
+                            <div class="platform-type">Elite Network</div>
+                        </div>
+                    </div>
+                    <p class="platform-description">Premium platform with vetted researchers. Requires passing assessments but offers high-value enterprise programs.</p>
+                    <div class="platform-tags">
+                        <span class="platform-tag">Vetted Only</span>
+                        <span class="platform-tag">Enterprise</span>
+                    </div>
+                </a>
 
-    <section id="contact">
-        <h2>Contact Us</h2>
-        <p>Have questions or want to collaborate? Reach out to us, and we’ll get back to you as soon as possible.</p>
-        <form action="https://formspree.io/f/mzzrenwo" method="POST">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Your Name" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Your Email" required>
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-    </section>
+            </div>
+        </section>
 
-    <footer>
-        <p>© 2025 BugBounty.info - Empowering Ethical Hackers Worldwide</p>
-        <ul>
-            <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a></li>
-            <li><a href="https://discord.com" target="_blank" rel="noopener noreferrer">Discord</a></li>
-        </ul>
-    </footer>
+        <!-- Resources Section -->
+        <section class="resources-section" id="resources">
+            <div class="section-header">
+                <span class="section-label">// Essential Resources</span>
+                <h2 class="section-title">Learning Resources</h2>
+                <p class="section-description">Free and paid resources to accelerate your bug bounty journey</p>
+            </div>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🎮</div>
+                    <div class="resource-content">
+                        <h3>Practice Labs</h3>
+                        <p>Hands-on practice environments where you can legally hack and learn without risk. Start with these before testing real programs.</p>
+                        <a href="https://portswigger.net/web-security" target="_blank" class="resource-link">
+                            PortSwigger Web Security Academy
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">📚</div>
+                    <div class="resource-content">
+                        <h3>OWASP Top 10</h3>
+                        <p>The industry-standard list of the most critical web application security risks. Essential knowledge for any bug hunter.</p>
+                        <a href="https://owasp.org/www-project-top-ten/" target="_blank" class="resource-link">
+                            Read the OWASP Top 10
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">🛠️</div>
+                    <div class="resource-content">
+                        <h3>Burp Suite</h3>
+                        <p>The essential tool for web security testing. The Community Edition is free and has everything beginners need.</p>
+                        <a href="https://portswigger.net/burp/communitydownload" target="_blank" class="resource-link">
+                            Download Burp Suite
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <div class="resource-content">
+                        <h3>HackerOne Hacktivity</h3>
+                        <p>Read disclosed bug reports from real programs. Learn from successful researchers and understand what makes a good report.</p>
+                        <a href="https://hackerone.com/hacktivity" target="_blank" class="resource-link">
+                            Browse Hacktivity
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <button id="back-to-top">↑</button>
+        <!-- Vulnerability Types -->
+        <section class="vulns-section">
+            <div class="section-header">
+                <span class="section-label">// Know Your Targets</span>
+                <h2 class="section-title">Common Vulnerability Types</h2>
+                <p class="section-description">The most frequently found and rewarded vulnerability categories</p>
+            </div>
+            <div class="vulns-grid">
+                <div class="vuln-card">
+                    <div class="vuln-icon">💉</div>
+                    <div class="vuln-name">SQL Injection</div>
+                    <span class="vuln-severity critical">Critical</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">📜</div>
+                    <div class="vuln-name">XSS</div>
+                    <span class="vuln-severity medium">Medium</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">🔓</div>
+                    <div class="vuln-name">IDOR</div>
+                    <span class="vuln-severity high">High</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">🔄</div>
+                    <div class="vuln-name">CSRF</div>
+                    <span class="vuln-severity medium">Medium</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">🌐</div>
+                    <div class="vuln-name">SSRF</div>
+                    <span class="vuln-severity critical">Critical</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">🔐</div>
+                    <div class="vuln-name">Auth Bypass</div>
+                    <span class="vuln-severity critical">Critical</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">📁</div>
+                    <div class="vuln-name">Path Traversal</div>
+                    <span class="vuln-severity high">High</span>
+                </div>
+                <div class="vuln-card">
+                    <div class="vuln-icon">⚙️</div>
+                    <div class="vuln-name">RCE</div>
+                    <span class="vuln-severity critical">Critical</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="tips-section">
+            <div class="section-header">
+                <span class="section-label">// Pro Tips</span>
+                <h2 class="section-title">Tips for Beginners</h2>
+                <p class="section-description">Advice from experienced bug bounty hunters to help you succeed</p>
+            </div>
+            <div class="tips-container">
+                <div class="tip-item">
+                    <div class="tip-number">1</div>
+                    <div class="tip-content">
+                        <h3>Focus on Learning, Not Earning</h3>
+                        <p>Your first few months should be about building skills, not chasing bounties. The money follows expertise. Invest time in understanding how applications work before trying to break them.</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">2</div>
+                    <div class="tip-content">
+                        <h3>Pick One Vulnerability Type to Master</h3>
+                        <p>Don't try to learn everything at once. Choose one vulnerability class (like XSS or IDOR) and become an expert. Deep knowledge beats surface-level understanding.</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">3</div>
+                    <div class="tip-content">
+                        <h3>Read Disclosed Reports</h3>
+                        <p>Study real bug reports on HackerOne Hacktivity and disclosed reports. You'll learn what good reports look like, common vulnerability patterns, and creative techniques.</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">4</div>
+                    <div class="tip-content">
+                        <h3>Write Quality Reports</h3>
+                        <p>A well-written report with clear reproduction steps, impact assessment, and proof of concept will get resolved faster and often receives higher bounties than a vague submission.</p>
+                    </div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">5</div>
+                    <div class="tip-content">
+                        <h3>Stay Ethical and In-Scope</h3>
+                        <p>Always follow program rules, stay within scope, and never access data you shouldn't. Your reputation is everything in this field. Ethical behavior builds trust and opens doors.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter CTA -->
+        <section class="cta-section">
+            <div class="cta-container">
+                <h2>Ready to Start Hunting?</h2>
+                <p>Join thousands of security researchers learning to find vulnerabilities and earn rewards</p>
+                <div class="hero-buttons" style="justify-content: center;">
+                    <a href="https://portswigger.net/web-security" target="_blank" class="btn btn-primary">
+                        <span>Start Free Training</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    <a href="https://hackerone.com" target="_blank" class="btn btn-secondary">
+                        <span>Join HackerOne</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-inner">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <a href="#" class="logo">
+                            <div class="logo-icon">BB</div>
+                            <span class="logo-text">BugBounty<span>.info</span></span>
+                        </a>
+                        <p>Your gateway to ethical hacking. Learn, hunt, and help secure the web.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Learn</h4>
+                        <ul>
+                            <li><a href="#what-is">What is Bug Bounty?</a></li>
+                            <li><a href="#get-started">Getting Started</a></li>
+                            <li><a href="#resources">Resources</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Platforms</h4>
+                        <ul>
+                            <li><a href="https://hackerone.com" target="_blank">HackerOne</a></li>
+                            <li><a href="https://bugcrowd.com" target="_blank">Bugcrowd</a></li>
+                            <li><a href="https://intigriti.com" target="_blank">Intigriti</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Practice</h4>
+                        <ul>
+                            <li><a href="https://portswigger.net/web-security" target="_blank">Web Security Academy</a></li>
+                            <li><a href="https://www.hackthebox.com" target="_blank">Hack The Box</a></li>
+                            <li><a href="https://tryhackme.com" target="_blank">TryHackMe</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 BugBounty.info — Educational resource for aspiring security researchers</p>
+                    <div class="footer-socials">
+                        <a href="#" aria-label="Twitter">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="GitHub">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Discord">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
     <script>
-        const backToTop = document.getElementById('back-to-top');
+        // Navbar scroll effect
+        const nav = document.getElementById('nav');
         window.addEventListener('scroll', () => {
-            backToTop.style.display = window.scrollY > 300 ? 'block' : 'none';
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
         });
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Terminal cursor blink
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe cards and sections for scroll animations
+        document.querySelectorAll('.path-step, .platform-card, .resource-card, .vuln-card, .tip-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
         });
     </script>
 </body>
